@@ -28,3 +28,10 @@
 /src/steamnetworkingsockets/Messageswin64Debug/*
 /src/steamnetworkingsockets/certtool/win64/*
 /src/steamnetworkingsockets/clientlib/win64/*
+
+# CMake working/out file
+/cmake_install.cmake
+/CMake_Cache.txt
+/MakeFile
+/CMakeFiles/*
+/CMakeFiles/
