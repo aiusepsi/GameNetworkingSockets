@@ -117,7 +117,7 @@
 	#define DebuggerBreak()  do { __asm__ __volatile__ ( "int $3" ); } while(0)
 #endif
 
-#if defined(_WIN64)
+#if defined(_WIN64) && defined(_M_AMD64)
 
 extern "C"
 {
@@ -141,7 +141,7 @@ inline __attribute__ ((always_inline)) unsigned long long PLAT_CPU_TIME()
 #endif
 }
 
-#elif defined(_WIN32)
+#elif defined(_WIN32) && defined(_M_IX86)
 
 FORCEINLINE unsigned __int64 PLAT_CPU_TIME()
 {
