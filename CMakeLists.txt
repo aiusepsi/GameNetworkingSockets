@@ -34,7 +34,21 @@ if(SANITIZE_ADDRESS OR SANITIZE_THREAD OR SANITIZE_MEMORY OR SANITIZE_UNDEFINED)
 endif()
 
 include(FlagsMSVC)
-set(MSVC_RUNTIME "dynamic")
+
+if(DEFINED VCPKG_TARGET_TRIPLET)
+	message(STATUS "Vcpkg target triplet: ${VCPKG_TARGET_TRIPLET}")
+endif()
+
+if(DEFINED VCPKG_CRT_LINKAGE)
+	set(MSVC_RUNTIME ${VCPKG_CRT_LINKAGE})
+else()
+	set(MSVC_RUNTIME "dynamic")
+endif()
+
+if(MSVC_RUNTIME STREQUAL "static")
+	set(OPENSSL_MSVC_STATIC_RT TRUE)
+endif()
+
 configure_msvc_runtime()
 print_default_msvc_flags()
 
@@ -46,9 +60,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 		)
 endif()
 
+option(BUILD_SHARED_LIBS "Build shared library" ON)
 option(LTO "Enable Link-Time Optimization" OFF)
 option(USE_STEAMWEBRTC "Build Google's WebRTC library to get ICE support for P2P" OFF)
 option(Protobuf_USE_STATIC_LIBS "Link with protobuf statically" OFF)
+option(OPENSSL_USE_STATIC_LIBS "Link with OpenSSL statically" OFF)
 option(LIGHT_TESTS "Use smaller/shorter tests for simple integration testing (e.g. Travis)" OFF)
 option(GAMENETWORKINGSOCKETS_BUILD_EXAMPLES "Build the included example chat program" ON)
 option(GAMENETWORKINGSOCKETS_BUILD_TESTS "Build crypto, pki and network connection tests" ON)

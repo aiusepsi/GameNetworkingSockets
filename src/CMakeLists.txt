@@ -282,23 +282,30 @@ macro(gamenetworkingsockets_common GNS_TARGET)
 
 endmacro()
 
-add_library(GameNetworkingSockets SHARED "")
-add_library(GameNetworkingSockets::GameNetworkingSockets ALIAS GameNetworkingSockets)
-add_library(GameNetworkingSockets::shared ALIAS GameNetworkingSockets)
-gamenetworkingsockets_common(GameNetworkingSockets)
-
 add_library(GameNetworkingSockets_s STATIC "")
 add_library(GameNetworkingSockets::GameNetworkingSockets_s ALIAS GameNetworkingSockets_s)
 add_library(GameNetworkingSockets::static ALIAS GameNetworkingSockets_s)
 target_compile_definitions(GameNetworkingSockets_s INTERFACE STEAMNETWORKINGSOCKETS_STATIC_LINK)
+set(GAMENETWORKINGSOCKETS_INSTALL_TARGETS GameNetworkingSockets_s)
 gamenetworkingsockets_common(GameNetworkingSockets_s)
+
+if(BUILD_SHARED_LIBS)
+	add_library(GameNetworkingSockets SHARED "")
+	add_library(GameNetworkingSockets::GameNetworkingSockets ALIAS GameNetworkingSockets)
+	add_library(GameNetworkingSockets::shared ALIAS GameNetworkingSockets)
+	gamenetworkingsockets_common(GameNetworkingSockets)
+	list(APPEND GAMENETWORKINGSOCKETS_INSTALL_TARGETS GameNetworkingSockets)
+else()
+	add_library(GameNetworkingSockets::GameNetworkingSockets ALIAS GameNetworkingSockets_s)
+endif()
+
+
 
 # Install rules
 
 install(
 	TARGETS 
-		GameNetworkingSockets
-		GameNetworkingSockets_s
+		${GAMENETWORKINGSOCKETS_INSTALL_TARGETS}
 	EXPORT GameNetworkingSockets
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

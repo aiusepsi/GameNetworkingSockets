@@ -14,6 +14,10 @@ vcpkg_check_features(
       webrtc USE_STEAMWEBRTC
 )
 
+if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+    set(STATIC_LIB_LINKAGE_OPTS -DBUILD_SHARED_LIBS=OFF -DProtobuf_USE_STATIC_LIBS=ON -DOPENSSL_USE_STATIC_LIBS=ON)
+endif()
+
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA
@@ -23,6 +27,7 @@ vcpkg_configure_cmake(
     -DUSE_CRYPTO=${CRYPTO_BACKEND}
     -DUSE_CRYPTO25519=${CRYPTO_BACKEND}
     ${FEATURE_OPTIONS}
+    ${STATIC_LIB_LINKAGE_OPTS}
 )
 
 vcpkg_install_cmake()
@@ -32,6 +37,5 @@ vcpkg_fixup_cmake_targets(CONFIG_PATH "lib/cmake/GameNetworkingSockets" TARGET_P
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
-
 
 vcpkg_copy_pdbs()
